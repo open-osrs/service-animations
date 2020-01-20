@@ -14,4 +14,4 @@ use the shadowJar gradle task, and you can use build/libs/-all jar to launch usi
   
 The following endpoints exist:  
 http://localhost:8081/animations/submit : Submits an animation to the database  
-http://localhost:8081/animations/get : Returns all currently collected keys  
+http://localhost:8081/animations/get : Returns all currently collected animations
