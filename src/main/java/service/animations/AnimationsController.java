@@ -24,17 +24,24 @@
  */
 package service.animations;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 
 @RestController
 @RequestMapping("/animations")
 public class AnimationsController {
-    private HashMap<Integer, int[]> animations = new HashMap<>();
+    public static HashMap<Integer, int[]> animations = new HashMap<>();
+    private Gson backupWriter = new GsonBuilder().setPrettyPrinting().create();
 
     @RequestMapping("/get")
     public HashMap<Integer, int[]> get() {
@@ -55,5 +62,16 @@ public class AnimationsController {
         }
         int[] newAnimations = ArrayUtils.add(animations.get(npcid), animation);
         animations.put(npcid, newAnimations);
+    }
+
+    @Scheduled(fixedDelay = 10 * 60 * 1000)
+    private void backupSounds()
+    {
+        try (FileWriter writer = new FileWriter(new File("./animations.json")))
+        {
+            writer.write(backupWriter.toJson(animations));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
